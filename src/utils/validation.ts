@@ -7,8 +7,20 @@ export const isValidEmail = (email?: string | null) => {
     return false;
   }
   const domain = email.slice(email.indexOf('@') + 1);
-  // Needs a dot with at least one character on each side.
-  return domain.length > 2 && domain.slice(1, -1).includes('.');
+  const labels = domain.split('.');
+  if (labels.length < 2) {
+    return false;
+  }
+
+  // The last label is the TLD: letters only, at least two of them.
+  if (!/^[A-Za-z]{2,}$/.test(labels[labels.length - 1])) {
+    return false;
+  }
+
+  // No empty label (a@b..c), and no label may begin or end with a dash.
+  return labels.every(
+    label => label.length > 0 && !label.startsWith('-') && !label.endsWith('-'),
+  );
 };
 
 export const validateSignup = (data: any) => {

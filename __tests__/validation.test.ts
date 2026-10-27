@@ -8,9 +8,8 @@ describe('isValidEmail', () => {
   it.each([
     'user@example.com',
     'first.last@sub.domain.org',
-    'a@b.c',
+    'a@b.co',
     'a@b_c.com',
-    'a@b..c',
   ])('accepts %s', email => {
     expect(isValidEmail(email)).toBe(true);
   });
@@ -25,6 +24,12 @@ describe('isValidEmail', () => {
     'a@.com',
     'a@com.',
     'a@b@c.com',
+    'a@b.c',
+    'a@...',
+    'a@b..c',
+    'a@-.-',
+    'a@-b.com',
+    'a@b-.com',
   ])('rejects "%s"', email => {
     expect(isValidEmail(email)).toBe(false);
   });
