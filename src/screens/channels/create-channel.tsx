@@ -110,11 +110,14 @@ const CreateChannelScreen = ({ navigation }: any) => {
                 </AppText>
               </View>
             </TouchableOpacity>
-            <View style={{ flex: 1 }}>
+            <View
+              style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+            >
               <TextInput
                 placeholder="Channel Name"
                 placeholderTextColor={colors.iconMuted}
                 value={channelName}
+                maxLength={40}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 onChangeText={text => {
@@ -122,11 +125,21 @@ const CreateChannelScreen = ({ navigation }: any) => {
                   setChannelName(formatted);
                 }}
                 style={{
+                  flex: 1,
                   fontSize: 16,
                   paddingVertical: 20,
                   color: colors.textPrimary,
                 }}
               />
+              <AppText
+                size={13}
+                accessibilityLabel={`${
+                  40 - channelName.length
+                } characters left`}
+                style={{ color: colors.iconMuted }}
+              >
+                {40 - channelName.length}
+              </AppText>
             </View>
           </View>
 
