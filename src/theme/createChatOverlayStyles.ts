@@ -2114,6 +2114,7 @@ export function createExitChatStyles(colors: ThemeColors) {
       lineHeight: 22,
       textAlign: 'center',
     },
+    warningTextEmphasis: { color: colors.textPrimary },
     footer: {
       flexDirection: 'row',
       marginTop: 30,
