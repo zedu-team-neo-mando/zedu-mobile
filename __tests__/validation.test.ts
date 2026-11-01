@@ -10,6 +10,10 @@ describe('isValidEmail', () => {
     'first.last@sub.domain.org',
     'a@b.co',
     'a@b_c.com',
+    'A@B.COM',
+    'a+tag@b.com',
+    'a@b.com.',
+    'a@b.xn--p1ai',
   ])('accepts %s', email => {
     expect(isValidEmail(email)).toBe(true);
   });
@@ -30,6 +34,10 @@ describe('isValidEmail', () => {
     'a@-.-',
     'a@-b.com',
     'a@b-.com',
+    // Raw Unicode TLDs are not accepted; use the punycode form instead.
+    'a@b.рф',
+    // Domain literals have no dotted labels and are not accepted.
+    'a@[1.2.3.4]',
   ])('rejects "%s"', email => {
     expect(isValidEmail(email)).toBe(false);
   });

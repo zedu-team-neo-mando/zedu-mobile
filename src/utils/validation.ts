@@ -6,14 +6,17 @@ export const isValidEmail = (email?: string | null) => {
   if (!email || !EMAIL_SHAPE.test(email)) {
     return false;
   }
-  const domain = email.slice(email.indexOf('@') + 1);
+  // A single trailing dot is the fully-qualified form ("a@b.com."), so drop it
+  // before splitting. "a@com." still fails below because it has no TLD label.
+  const domain = email.slice(email.indexOf('@') + 1).replace(/\.$/, '');
   const labels = domain.split('.');
   if (labels.length < 2) {
     return false;
   }
 
-  // The last label is the TLD: letters only, at least two of them.
-  if (!/^[A-Za-z]{2,}$/.test(labels[labels.length - 1])) {
+  // The last label is the TLD: letters only, at least two of them, or an IDN
+  // written in punycode ("a@b.xn--p1ai"). Raw Unicode TLDs are rejected.
+  if (!/^(?:[A-Za-z]{2,}|xn--[A-Za-z0-9-]+)$/.test(labels[labels.length - 1])) {
     return false;
   }
 
