@@ -14,6 +14,12 @@ import Container from '@/components/layout/container';
 import { useDataContext } from '@/store/useDataContext';
 import { PostRequest } from '@/utils/requests';
 import { ACTIONS } from '@/store/types';
+import {
+  MAX_CHANNEL_NAME_LENGTH,
+  finalizeChannelName,
+  formatChannelName,
+  getChannelNameRemaining,
+} from '@/utils/channel-name';
 
 const CreateChannelScreen = ({ navigation }: any) => {
   const { colors } = useTheme();
@@ -33,10 +39,15 @@ const CreateChannelScreen = ({ navigation }: any) => {
   const { orgId, user } = state;
 
   const createChannel = async () => {
+    const name = finalizeChannelName(channelName);
+    if (!name) {
+      return;
+    }
+
     setButtonLoading(true);
 
     const payload = {
-      name: channelName,
+      name,
       description: description.trim(),
       organisation_id: orgId,
       is_private: channelType === 'Private' ? true : false,
@@ -88,7 +99,7 @@ const CreateChannelScreen = ({ navigation }: any) => {
             /* Handle Next */
           }}
           style={styles.headerBtn}
-          disabled={!channelName.trim()}
+          disabled={!finalizeChannelName(channelName)}
         />
       </View>
 
@@ -117,12 +128,11 @@ const CreateChannelScreen = ({ navigation }: any) => {
                 placeholder="Channel Name"
                 placeholderTextColor={colors.iconMuted}
                 value={channelName}
-                maxLength={40}
+                maxLength={MAX_CHANNEL_NAME_LENGTH}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 onChangeText={text => {
-                  const formatted = text.replace(/\s/g, '-').toLowerCase();
-                  setChannelName(formatted);
+                  setChannelName(formatChannelName(text));
                 }}
                 style={{
                   flex: 1,
@@ -133,12 +143,12 @@ const CreateChannelScreen = ({ navigation }: any) => {
               />
               <AppText
                 size={13}
-                accessibilityLabel={`${
-                  40 - channelName.length
-                } characters left`}
+                accessibilityLabel={`${getChannelNameRemaining(
+                  channelName,
+                )} characters left`}
                 style={{ color: colors.iconMuted }}
               >
-                {40 - channelName.length}
+                {getChannelNameRemaining(channelName)}
               </AppText>
             </View>
           </View>
